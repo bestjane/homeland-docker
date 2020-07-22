@@ -10,7 +10,6 @@ install:
 	@$(RUN) bundle exec rails db:create
 	@$(RUN) bundle exec rails db:migrate
 	@$(RUN) bundle exec rails db:seed
-	@make reindex
 install_ssl:
 	docker-compose start web
 	$(RUN_WEB) ash -c 'echo $$cert_domain'
@@ -43,9 +42,8 @@ rollback:
 console:
 	@$(RUN) bundle exec rails console
 reindex:
-	@echo "Reindex ElasticSearch..."
-	@$(RAKE) environment elasticsearch:import:model CLASS=Topic FORCE=y
-	@$(RAKE) environment elasticsearch:import:model CLASS=User FORCE=y
+	@echo "Reindex Search..."
+	@$(RAKE) reindex
 secret:
 	@test -f app.secret.env || echo "SECRET_KEY_BASE=`openssl rand -hex 32`" > app.secret.env
 	@cat app.secret.env
